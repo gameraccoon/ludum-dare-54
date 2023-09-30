@@ -15,7 +15,7 @@ func show_game_over():
 	$MessageLabel.text = "Text after game over"
 	$MessageLabel.show()
 	yield(get_tree().create_timer(1), "timeout")
-	$StartButton.show()
+	$StartStuff.show()
 
 
 func update_score(score):
@@ -23,7 +23,7 @@ func update_score(score):
 
 
 func _on_StartButton_pressed():
-	$StartButton.hide()
+	$StartStuff.hide()
 	emit_signal("start_game")
 
 

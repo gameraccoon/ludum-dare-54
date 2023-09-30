@@ -1,10 +1,16 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://HUD.gd" type="Script" id=1]
 [ext_resource path="res://fonts/Xolonium-Regular.ttf" type="DynamicFontData" id=2]
 
 [sub_resource type="DynamicFont" id=1]
 size = 64
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=5]
+size = 29
+use_mipmaps = true
+use_filter = true
 font_data = ExtResource( 2 )
 
 [sub_resource type="DynamicFont" id=2]
@@ -37,7 +43,29 @@ custom_fonts/font = SubResource( 1 )
 text = "Gimme space pls"
 align = 1
 
-[node name="StartButton" type="Button" parent="."]
+[node name="MessageTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="StartStuff" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Credits" type="Label" parent="StartStuff"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 642.0
+margin_top = 461.0
+custom_fonts/font = SubResource( 5 )
+text = "Done for
+LudumDare54
+
+Pavel Grebnev
+Alexey Agaphonov
+Lizik Vin
+Tumbleweed"
+align = 1
+
+[node name="StartButton" type="Button" parent="StartStuff"]
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -53,8 +81,5 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MessageTimer" type="Timer" parent="."]
-one_shot = true
-
-[connection signal="pressed" from="StartButton" to="." method="_on_StartButton_pressed"]
 [connection signal="timeout" from="MessageTimer" to="." method="_on_MessageTimer_timeout"]
+[connection signal="pressed" from="StartStuff/StartButton" to="." method="_on_StartButton_pressed"]
