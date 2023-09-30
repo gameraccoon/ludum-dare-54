@@ -62,6 +62,10 @@ func _calc_walls_points_to_cell(cell_pos: Vector2):
 func _wall_point_to_world(wall_point: Vector2) -> Vector2:
 	return wall_point * Consts.WallLength
 
+func _on_wall_destroyed(pos):
+	print("wall destroyed", pos)
+	destroy_walls()
+
 func _spawn_new_wall():
 	if len(walls_points) > 1:
 		var last_wall_point = walls_points[-1]
@@ -70,6 +74,8 @@ func _spawn_new_wall():
 		var wall_node_pos = (_wall_point_to_world(last_wall_point) + _wall_point_to_world(pre_last_wall_point)) / 2
 		var new_wall = wall_prefub.instance()
 		new_wall.set_wall_type(is_vertical)
+		new_wall.coordinates = last_wall_point
+		new_wall.connect("on_destroyed", self, "_on_wall_destroyed")
 		new_wall.position = wall_node_pos
 		add_child(new_wall)
 		walls.append(new_wall)
@@ -87,3 +93,4 @@ func _draw_grid():
 		draw_line(Vector2(0, i * Consts.WallLength), Vector2(GRID_SIZE * Consts.WallLength, i * Consts.WallLength), Color.aliceblue, 0.5)
 	for i in range(GRID_SIZE):
 		draw_line(Vector2(i * Consts.WallLength, 0), Vector2(i * Consts.WallLength, GRID_SIZE * Consts.WallLength), Color.aliceblue, 0.5)
+
