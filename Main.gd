@@ -54,11 +54,6 @@ func _on_MobTimer_timeout():
 
 	# Spawn the mob by adding it to the Main scene.
 	add_child(mob)
-	
-	var move_dir = randi() % 4
-	var move_x = 1 if move_dir == 0 else (-1 if move_dir == 1 else 0)
-	var move_y = 1 if move_dir == 2 else (-1 if move_dir == 3 else 0)
-	$Player.move($Player.position, $Player.position + Vector2(150.0 * move_x, 150.0 * move_y))
 
 
 func _on_ScoreTimer_timeout():
@@ -68,6 +63,12 @@ func _process(delta):
 	var should_continue = GameRules.process(delta)
 	if should_continue == false:
 		game_over()
+	
+	if $Player.position.distance_squared_to($Player.target_pos) < $Player.approaching_threshold * $Player.approaching_threshold:
+		var move_dir = randi() % 4
+		var move_x = 1 if move_dir == 0 else (-1 if move_dir == 1 else 0)
+		var move_y = 1 if move_dir == 2 else (-1 if move_dir == 3 else 0)
+		$Player.move($Player.position, $Player.position + Vector2(150.0 * move_x, 150.0 * move_y), 0.7)
 
 
 func _on_StartTimer_timeout():
