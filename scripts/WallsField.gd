@@ -51,15 +51,6 @@ func move_by_dir(dir):
 		$Player.move(player_cell_position * Consts.WallLength, (player_cell_position + offset) * Consts.WallLength, 0.2)
 		player_cell_position += offset
 
-func _should_change_player_pos(dir) -> bool:
-	var player_cell_points = _calc_walls_points_to_cell(player_cell_position)
-	return player_cell_points.find(walls_points[-1]) == -1
-
-func _calc_walls_points_to_cell(cell_pos: Vector2):
-	var res = [Vector2(0, 1), Vector2(0, 0), Vector2(1, 0), Vector2(1, 1)]
-	for i in len(res):
-		res[i] += cell_pos
-	return res
 
 func _wall_point_to_world(wall_point: Vector2) -> Vector2:
 	return wall_point * Consts.WallLength
