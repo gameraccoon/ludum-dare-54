@@ -1,6 +1,7 @@
 extends Area2D
 
 var target_pos = Vector2(0.0, 0.0)
+var last_pos = Vector2(0.0, 0.0)
 var distance_from_start = 25.0
 var speed = 0.0
 
@@ -28,11 +29,12 @@ func _process(delta):
 
 func move(from, to, time):
 	var pos_diff = to - from
-	if from.distance_to(position) > approaching_threshold or abs(from.angle_to_point(to) - position.angle_to_point(target_pos)) > PI*0.4:
+	if abs(from.angle_to_point(to) - last_pos.angle_to_point(target_pos)) > 0.5*PI:
 		position = from + pos_diff.normalized() * distance_from_start
 	target_pos = to
 	
 	speed = position.distance_to(target_pos) / time
+	last_pos = position
 	approaching_threshold = speed / 60.0
 
 
