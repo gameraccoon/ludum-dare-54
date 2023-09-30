@@ -31,7 +31,11 @@ func _on_MobTimer_timeout():
 	var mob = mob_scene.instance()
 
 	# Choose a random location on Path2D.
-	var mob_spawn_location = get_node("MobPath/MobSpawnLocation")
+	var mob_spawn_location1 = get_node("MobPath1/MobSpawnLocation1")
+	var mob_spawn_location2 = get_node("MobPath2/MobSpawnLocation2")
+	
+	var mob_spawn_location = mob_spawn_location1 if randi() % 2 == 0 else mob_spawn_location2
+	
 	mob_spawn_location.offset = randi()
 
 	# Set the mob's direction perpendicular to the path direction.
