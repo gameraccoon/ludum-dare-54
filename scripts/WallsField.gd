@@ -37,10 +37,7 @@ func destroy_walls():
 
 func _ready():
 	walls_points.append(start_point)
-	var mob = mob_scene.instance()
-	mob.position = Vector2(100, 100)
-	mob.linear_velocity = Vector2(100, 0)
-	$Enemies.add_child(mob)
+	$Timer.start()
 
 func _input(event):
 	if event is InputEventKey and not event.is_pressed() and KeyCodesToDirection.has(event.get_scancode()):
@@ -99,3 +96,33 @@ func _draw_grid():
 	for i in range(GRID_SIZE):
 		draw_line(Vector2(i * Consts.WallLength, 0), Vector2(i * Consts.WallLength, GRID_SIZE * Consts.WallLength), Color.aliceblue, 0.5)
 
+
+
+func _on_Timer_timeout():
+	# Create a new instance of the Mob scene.
+	var mob = mob_scene.instance()
+
+	# Choose a random location on Path2D.
+	var mob_spawn_location1 = get_node("SpawnBorders/MobPath1/MobSpawnLocation1")
+	var mob_spawn_location2 = get_node("SpawnBorders/MobPath2/MobSpawnLocation2")
+	
+	var mob_spawn_location = mob_spawn_location1 if randi() % 2 == 0 else mob_spawn_location2
+	
+	mob_spawn_location.offset = randi()
+
+	# Set the mob's direction perpendicular to the path direction.
+	var direction = mob_spawn_location.rotation - PI / 2
+
+	# Set the mob's position to a random location.
+	mob.position = mob_spawn_location.position
+
+	# Add some randomness to the direction.
+	#direction += rand_range(-PI / 4, PI / 4)
+	mob.rotation = direction
+
+	# Choose the velocity for the mob.
+	var velocity = Vector2(rand_range(100.0, 150.0), 0.0)
+	mob.linear_velocity = velocity.rotated(direction)
+
+	# Spawn the mob by adding it to the Main scene.
+	$Enemies.add_child(mob)

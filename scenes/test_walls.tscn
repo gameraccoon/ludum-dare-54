@@ -1,8 +1,18 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scripts/WallsField.gd" type="Script" id=1]
 [ext_resource path="res://Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Enemy1.tscn" type="PackedScene" id=3]
+
+[sub_resource type="Curve2D" id=1]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 1, -5, 0, 0, 0, 0, -1, 765 )
+}
+
+[sub_resource type="Curve2D" id=2]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 479, 765, 0, 0, 0, 0, 481, -4 )
+}
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource( 1 )
@@ -12,3 +22,24 @@ mob_scene = ExtResource( 3 )
 position = Vector2( 623, 440 )
 
 [node name="Enemies" type="Node2D" parent="."]
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 1.5
+
+[node name="SpawnBorders" type="Node2D" parent="."]
+
+[node name="MobPath1" type="Path2D" parent="SpawnBorders"]
+curve = SubResource( 1 )
+
+[node name="MobSpawnLocation1" type="PathFollow2D" parent="SpawnBorders/MobPath1"]
+position = Vector2( 1, -5 )
+rotation = 1.57339
+
+[node name="MobPath2" type="Path2D" parent="SpawnBorders"]
+curve = SubResource( 2 )
+
+[node name="MobSpawnLocation2" type="PathFollow2D" parent="SpawnBorders/MobPath2"]
+position = Vector2( 479, 765 )
+rotation = -1.5682
+
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
