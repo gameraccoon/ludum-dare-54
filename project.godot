@@ -15,6 +15,10 @@ config/description="Game made for LD54"
 run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+GameRules="*res://scripts/GameRules.gd"
+
 [display]
 
 window/size/height=768

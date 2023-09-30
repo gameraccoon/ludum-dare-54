@@ -32,6 +32,7 @@ color = Color( 0.219608, 0.372549, 0.380392, 1 )
 wait_time = 0.5
 
 [node name="ScoreTimer" type="Timer" parent="."]
+wait_time = 0.25
 
 [node name="StartTimer" type="Timer" parent="."]
 wait_time = 2.0
@@ -44,12 +45,14 @@ position = Vector2( 517, 402 )
 curve = SubResource( 1 )
 
 [node name="MobSpawnLocation1" type="PathFollow2D" parent="MobPath1"]
+position = Vector2( 0, 768 )
 rotation = -1.5708
 
 [node name="MobPath2" type="Path2D" parent="."]
 curve = SubResource( 2 )
 
 [node name="MobSpawnLocation2" type="PathFollow2D" parent="MobPath2"]
+position = Vector2( 1024, 0 )
 rotation = 1.5708
 
 [node name="HUD" parent="." instance=ExtResource( 4 )]

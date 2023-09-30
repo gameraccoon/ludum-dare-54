@@ -1,7 +1,6 @@
 extends Node
 
 export(PackedScene) var mob_scene
-var score
 
 
 func _ready():
@@ -18,12 +17,13 @@ func game_over():
 
 func new_game():
 	get_tree().call_group("mobs", "queue_free")
-	score = 0
 	$Player.start($StartPosition.position)
 	$StartTimer.start()
-	$HUD.update_score(score)
+	$HUD.update_score(floor(GameRules.get_time_left()))
 	$HUD.show_message("Get Ready")
 	#$Music.play()
+	GameRules.reset()
+	
 
 
 func _on_MobTimer_timeout():
@@ -57,10 +57,15 @@ func _on_MobTimer_timeout():
 
 
 func _on_ScoreTimer_timeout():
-	score += 1
-	$HUD.update_score(score)
+	$HUD.update_score(floor(GameRules.get_time_left()))
+
+func _process(delta):
+	var should_continue = GameRules.process(delta)
+	if should_continue == false:
+		game_over()
 
 
 func _on_StartTimer_timeout():
 	$MobTimer.start()
 	$ScoreTimer.start()
+	GameRules.start_game()
