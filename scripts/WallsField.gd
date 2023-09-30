@@ -16,17 +16,17 @@ const DirectionToVector = {
 	Direction.South: Vector2(0, 1),
 }
 
-const WALL_SIZE = 40
-
 var walls_points = []
 var start_point = Vector2(0, 0)
 var player_cell_position = Vector2(0, 0)
+var walls = []
+
+var wall_prefub = preload("res://scenes/Wall.tscn")
 
 func destroy_walls():
 	var walls_points_len = len(walls_points)
 	if walls_points_len > 2:
 		walls_points = walls_points.slice(walls_points_len - 2, walls_points_len)
-	update()
 
 func _ready():
 	walls_points.append(start_point)
@@ -39,10 +39,9 @@ func move_by_dir(dir):
 	var offset = DirectionToVector[dir]
 	if offset != null:
 		walls_points.append(walls_points[-1] + offset)
-		#if _should_change_player_pos(dir):
+		_spawn_new_wall()
 		player_cell_position += offset
-		$Player.move($Player.position, player_cell_position * WALL_SIZE, 0.4)
-		update()
+		$Player.move($Player.position, player_cell_position * Consts.WallLength, 0.4)
 
 func _should_change_player_pos(dir) -> bool:
 	var player_cell_points = _calc_walls_points_to_cell(player_cell_position)
@@ -55,7 +54,19 @@ func _calc_walls_points_to_cell(cell_pos: Vector2):
 	return res
 
 func _wall_point_to_world(wall_point: Vector2) -> Vector2:
-	return wall_point * WALL_SIZE
+	return wall_point * Consts.WallLength
+
+func _spawn_new_wall():
+	if len(walls_points) > 1:
+		var last_wall_point = walls_points[-1]
+		var pre_last_wall_point = walls_points[-2]
+		var is_vertical = last_wall_point.y != pre_last_wall_point.y
+		var wall_node_pos = (_wall_point_to_world(last_wall_point) + _wall_point_to_world(pre_last_wall_point)) / 2
+		var new_wall = wall_prefub.instance()
+		new_wall.set_wall_type(is_vertical)
+		new_wall.position = wall_node_pos
+		add_child(new_wall)
+		walls.append(new_wall)
 
 #
 # DEBUG DRAWING FUNCTIONS
@@ -63,20 +74,10 @@ func _wall_point_to_world(wall_point: Vector2) -> Vector2:
 
 func _draw() -> void:
 	_draw_grid()
-	_draw_walls()
 
 func _draw_grid():
 	var GRID_SIZE = 12
 	for i in range(GRID_SIZE):
-		draw_line(Vector2(0, i * WALL_SIZE), Vector2(GRID_SIZE * WALL_SIZE, i * WALL_SIZE), Color.aliceblue, 0.5)
+		draw_line(Vector2(0, i * Consts.WallLength), Vector2(GRID_SIZE * Consts.WallLength, i * Consts.WallLength), Color.aliceblue, 0.5)
 	for i in range(GRID_SIZE):
-		draw_line(Vector2(i * WALL_SIZE, 0), Vector2(i * WALL_SIZE, GRID_SIZE * WALL_SIZE), Color.aliceblue, 0.5)
-
-func _draw_walls():
-	if len(walls_points) > 1:
-		for i in range(1, len(walls_points)):
-			draw_line(
-				_wall_point_to_world(walls_points[i - 1]), 
-				_wall_point_to_world(walls_points[i]), 
-				Color.red, 2.0)
-
+		draw_line(Vector2(i * Consts.WallLength, 0), Vector2(i * Consts.WallLength, GRID_SIZE * Consts.WallLength), Color.aliceblue, 0.5)
