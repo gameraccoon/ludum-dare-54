@@ -1,54 +1,26 @@
 extends Area2D
 
-signal hit
-
-export var speed = 400 # How fast the player will move (pixels/sec).
-var screen_size # Size of the game window.
-
+var target_pos = Vector2(0.0, 0.0)
 
 func _ready():
-	screen_size = get_viewport_rect().size
+	target_pos = position
 	hide()
 
 
 func _process(delta):
-	var velocity = Vector2.ZERO # The player's movement vector.
-	if Input.is_action_pressed("move_right"):
-		velocity.x += 1
-	if Input.is_action_pressed("move_left"):
-		velocity.x -= 1
-	if Input.is_action_pressed("move_down"):
-		velocity.y += 1
-	if Input.is_action_pressed("move_up"):
-		velocity.y -= 1
-
-	if velocity.length() > 0:
-		velocity = velocity.normalized() * speed
-		$AnimatedSprite.play()
-	else:
-		$AnimatedSprite.stop()
-
-	position += velocity * delta
-	position.x = clamp(position.x, 0, screen_size.x)
-	position.y = clamp(position.y, 0, screen_size.y)
-
-	if velocity.x != 0:
-		$AnimatedSprite.animation = "right"
-		$AnimatedSprite.flip_v = false
-		$AnimatedSprite.flip_h = velocity.x < 0
-	elif velocity.y != 0:
-		$AnimatedSprite.animation = "up"
-		$AnimatedSprite.flip_v = velocity.y > 0
+	var pos_diff = (target_pos - position)
+	var distance = pos_diff.length()
+	
+	if distance < 0.1:
+		return
+	
+	var velocity = pos_diff / distance
+	
+	rotation = velocity.angle()
+	position += velocity * delta * 100
 
 
 func start(pos):
 	position = pos
+	target_pos = position
 	show()
-	$CollisionShape2D.disabled = false
-
-
-func _on_Player_body_entered(_body):
-	hide() # Player disappears after being hit.
-	emit_signal("hit")
-	# Must be deferred as we can't change physics properties on a physics callback.
-	$CollisionShape2D.set_deferred("disabled", true)
