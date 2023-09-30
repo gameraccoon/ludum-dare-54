@@ -40,7 +40,7 @@ func move_by_dir(dir):
 	if offset != null:
 		walls_points.append(walls_points[-1] + offset)
 		_spawn_new_wall()
-		$Player.move(player_cell_position * WALL_SIZE, (player_cell_position + offset) * WALL_SIZE, 0.2)
+		$Player.move(player_cell_position * Consts.WallLength, (player_cell_position + offset) * Consts.WallLength, 0.2)
 		player_cell_position += offset
 
 func _should_change_player_pos(dir) -> bool:
