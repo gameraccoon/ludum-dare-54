@@ -20,7 +20,7 @@ const WALL_SIZE = 40
 
 var walls_points = []
 var start_point = Vector2(0, 0)
-
+var player_cell_position = Vector2(0, 0)
 
 func destroy_walls():
 	var walls_points_len = len(walls_points)
@@ -32,26 +32,57 @@ func _ready():
 	walls_points.append(start_point)
 
 func _input(event):
-	if event is InputEventKey and not event.is_pressed():
-		var dir = KeyCodesToDirection[event.get_scancode()]
-		if dir != null:
-			move_by_dir(dir)
+	if event is InputEventKey and not event.is_pressed() and KeyCodesToDirection.has(event.get_scancode()):
+		move_by_dir(KeyCodesToDirection[event.get_scancode()])
 
-func move_by_dir(direction):
-	var offset = DirectionToVector[direction]
+func move_by_dir(dir):
+	var offset = DirectionToVector[dir]
 	if offset != null:
 		walls_points.append(walls_points[-1] + offset)
+		if _should_change_player_pos(dir):
+			player_cell_position += offset
 		update()
 
+func _should_change_player_pos(dir) -> bool:
+	var player_cell_points = _calc_walls_points_to_cell(player_cell_position)
+	return player_cell_points.find(walls_points[-1]) == -1
+
+func _calc_walls_points_to_cell(cell_pos: Vector2):
+	var res = [Vector2(0, 1), Vector2(0, 0), Vector2(1, 0), Vector2(1, 1)]
+	for i in len(res):
+		res[i] += cell_pos
+	return res
+
+func _wall_point_to_world(wall_point: Vector2) -> Vector2:
+	return wall_point * WALL_SIZE
+
+#
+# DEBUG DRAWING FUNCTIONS
+#
+
 func _draw() -> void:
-	# DEBUG DRAWING
+	_draw_grid()
+	_draw_walls()
+	_draw_player()
+
+func _draw_grid():
 	var GRID_SIZE = 12
 	for i in range(GRID_SIZE):
 		draw_line(Vector2(0, i * WALL_SIZE), Vector2(GRID_SIZE * WALL_SIZE, i * WALL_SIZE), Color.aliceblue, 0.5)
 	for i in range(GRID_SIZE):
 		draw_line(Vector2(i * WALL_SIZE, 0), Vector2(i * WALL_SIZE, GRID_SIZE * WALL_SIZE), Color.aliceblue, 0.5)
-	
+
+func _draw_walls():
 	if len(walls_points) > 1:
 		for i in range(1, len(walls_points)):
-			draw_line(walls_points[i - 1] * WALL_SIZE, walls_points[i] * WALL_SIZE, Color.red, 2.0)	
+			draw_line(
+				_wall_point_to_world(walls_points[i - 1]), 
+				_wall_point_to_world(walls_points[i]), 
+				Color.red, 2.0)
+
+func _draw_player():
+	draw_circle(
+		(_wall_point_to_world(player_cell_position + Vector2(0.5, 0.5)) + _wall_point_to_world(walls_points[-1])) / 2, 
+		WALL_SIZE * 0.1, 
+		Color.yellow)
 
