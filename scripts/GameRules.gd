@@ -6,7 +6,7 @@ var current_time = 0.0
 var current_score = 0
 
 var score_needed = 1000
-var time_for_the_level = 10.0
+var time_for_the_level = 100.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
