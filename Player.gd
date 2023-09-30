@@ -9,7 +9,7 @@ var approaching_threshold = 2.0
 func _ready():
 	randomize()
 	target_pos = position
-	hide()
+	#hide()
 
 
 func _process(delta):

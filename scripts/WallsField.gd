@@ -39,8 +39,9 @@ func move_by_dir(dir):
 	var offset = DirectionToVector[dir]
 	if offset != null:
 		walls_points.append(walls_points[-1] + offset)
-		if _should_change_player_pos(dir):
-			player_cell_position += offset
+		#if _should_change_player_pos(dir):
+		player_cell_position += offset
+		$Player.move($Player.position, player_cell_position * WALL_SIZE, 0.4)
 		update()
 
 func _should_change_player_pos(dir) -> bool:
@@ -63,7 +64,6 @@ func _wall_point_to_world(wall_point: Vector2) -> Vector2:
 func _draw() -> void:
 	_draw_grid()
 	_draw_walls()
-	_draw_player()
 
 func _draw_grid():
 	var GRID_SIZE = 12
@@ -79,10 +79,4 @@ func _draw_walls():
 				_wall_point_to_world(walls_points[i - 1]), 
 				_wall_point_to_world(walls_points[i]), 
 				Color.red, 2.0)
-
-func _draw_player():
-	draw_circle(
-		(_wall_point_to_world(player_cell_position + Vector2(0.5, 0.5)) + _wall_point_to_world(walls_points[-1])) / 2, 
-		WALL_SIZE * 0.1, 
-		Color.yellow)
 
