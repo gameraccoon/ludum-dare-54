@@ -1,5 +1,7 @@
 extends Node2D
 
+export(PackedScene) var mob_scene
+
 enum Direction { West, East, North, South }
 
 const KeyCodesToDirection = {
@@ -30,6 +32,10 @@ func destroy_walls():
 
 func _ready():
 	walls_points.append(start_point)
+	var mob = mob_scene.instance()
+	mob.position = Vector2(100, 100)
+	mob.linear_velocity = Vector2(100, 0)
+	$Enemies.add_child(mob)
 
 func _input(event):
 	if event is InputEventKey and not event.is_pressed() and KeyCodesToDirection.has(event.get_scancode()):

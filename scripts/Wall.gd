@@ -7,3 +7,7 @@ func set_wall_type(is_vertical: bool):
 	else:
 		region_rect.size.x = Consts.WallLength
 		region_rect.size.y = Consts.WallWidth
+
+
+func _on_Area2D_body_entered(body):
+	body.queue_free()
