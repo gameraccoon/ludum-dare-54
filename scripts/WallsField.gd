@@ -29,6 +29,11 @@ func destroy_walls():
 	var walls_points_len = len(walls_points)
 	if walls_points_len > 2:
 		walls_points = walls_points.slice(walls_points_len - 2, walls_points_len)
+	
+	for i in range(0, walls_points_len-2):
+		walls[i].queue_free()
+	walls = walls.slice(walls_points_len - 2, walls_points_len)
+
 
 func _ready():
 	walls_points.append(start_point)
